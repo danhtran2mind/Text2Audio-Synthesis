@@ -51,10 +51,9 @@ def main(configs, config_yaml_path, exp_group_name, exp_name, perform_validation
     num_workers = min(configs["preprocessing"]["num_workers"], os.cpu_count() - 1)
     log_path = configs["log_directory"]
     batch_size = configs["model"]["params"]["batchsize"]
-    val_batch_size = configs["model"]["params"]["val_batchsize"]
-
-    gradient_accumulation_steps = configs["model"]["params"]["gradient_accumulation_steps"]
-    val_gradient_accumulation_steps = configs["model"]["params"]["val_gradient_accumulation_steps"]
+    val_batch_size = configs["model"]["params"]["batchsize"]
+    gradient_accumulation_steps = configs["addition_params"]["gradient_accumulation_steps"]
+    val_gradient_accumulation_steps = configs["addition_params"]["gradient_accumulation_steps"]
 
     if "dataloader_add_ons" in configs["data"].keys():
         dataloader_add_ons = configs["data"]["dataloader_add_ons"]
