@@ -63,7 +63,7 @@ audioldm -t "A hammer is hitting a wooden surface"
 
 :star2: **Audio-to-Audio Generation**: generate an audio guided by an audio (output will have similar audio events as the input audio file).
 ```shell
-audioldm --file_path trumpet.wav
+audioldm --file_path ./assets/trumpet.wav
 # Result will be saved in "./output/generation_audio_to_audio/trumpet"
 ```
 
@@ -73,12 +73,12 @@ audioldm --file_path trumpet.wav
 # --file_path is the original audio file for transfer
 # -t is the text AudioLDM uses for transfer. 
 # Please make sure that --file_path exist
-audioldm --mode "transfer" --file_path trumpet.wav -t "Children Singing" 
+audioldm --mode "transfer" --file_path ./assets/trumpet.wav -t "Children Singing" 
 # Result will be saved in "./output/transfer/trumpet"
 
 # Tune the value of --transfer_strength is important!
 # --transfer_strength: A value between 0 and 1. 0 means original audio without transfer, 1 means completely transfer to the audio indicated by text
-audioldm --mode "transfer" --file_path trumpet.wav -t "Children Singing" --transfer_strength 0.25
+audioldm --mode "transfer" --file_path ./assets/trumpet.wav -t "Children Singing" --transfer_strength 0.25
 ```
 
 :gear: How to choose between different model checkpoints?
