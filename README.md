@@ -59,6 +59,13 @@ snapshot_download(
     --wandb_off
 ```
 
+## TO DO
+- [ ] Fix path at:
+    - [ ] `src/audioldm/audioldm_train/modules/latent_diffusion/ddpm.py` line 113
+    - [ ] `src/audioldm/audioldm_train/utilities/model_util.py` line 267
+- [ ] Create sperated `src/audioldm/train.py`
+- [ ] add num_gradient_accum
+
 ## Reference
 This project use code from:
 - `haoheliu/AudioLDM` (https://github.com/haoheliu/AudioLDM)

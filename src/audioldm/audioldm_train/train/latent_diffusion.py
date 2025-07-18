@@ -49,7 +49,7 @@ def main(configs, config_yaml_path, exp_group_name, exp_name, perform_validation
         torch.set_float32_matmul_precision(configs["precision"])  # highest, high, medium
 
     log_path = configs["log_directory"]
-    batch_size = configs["model"]["params"]["batchsize"]
+    batch_size = configs["model"]["params"]["batch_size"]
 
     if "dataloader_add_ons" in configs["data"].keys():
         dataloader_add_ons = configs["data"]["dataloader_add_ons"]
@@ -67,7 +67,7 @@ def main(configs, config_yaml_path, exp_group_name, exp_name, perform_validation
     )
 
     print(
-        "The length of the dataset is %s, the length of the dataloader is %s, the batchsize is %s"
+        "The length of the dataset is %s, the length of the dataloader is %s, the batch_size is %s"
         % (len(dataset), len(loader), batch_size)
     )
 
@@ -168,6 +168,7 @@ def main(configs, config_yaml_path, exp_group_name, exp_name, perform_validation
         check_val_every_n_epoch=validation_every_n_epochs,
         strategy=DDPStrategy(find_unused_parameters=True) if accelerator == "gpu" else 'auto',
         callbacks=[checkpoint_callback],
+        accumulate_grad_batches=gradient_accumulation_steps,
     )
 
     if is_external_checkpoints:
@@ -225,6 +226,12 @@ if __name__ == "__main__":
         help="perform validation",
     )
     parser.add_argument(
+    "--gradient_accumulation_steps",
+    type=int,
+    default=1,
+    help="number of gradient accumulation steps",
+    )
+    parser.add_argument(
         "--accelerator",
         type=str,
         default="gpu",
@@ -242,6 +249,7 @@ if __name__ == "__main__":
     perform_validation = args.val
     accelerator = args.accelerator
     wandb_off = args.wandb_off
+    gradient_accumulation_steps = args.gradient_accumulation_steps
 
     if accelerator == "gpu" and not torch.cuda.is_available():
         raise RuntimeError("CUDA is not available, use --accelerator cpu instead")

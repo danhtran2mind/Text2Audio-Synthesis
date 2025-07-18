@@ -55,7 +55,7 @@ model:
       params: 
         reload_from_ckpt: "ckpts/vae_mel_16k_64bins.ckpt"
         sampling_rate: *sampling_rate
-        batchsize: 4
+        batch_size: 4
         monitor: val/rec_loss
         image_key: fbank
         subband: 1
@@ -90,7 +90,7 @@ model:
     warmup_steps: *warmup_steps
     optimize_ddpm_parameter: *optimize_ddpm_parameter
     sampling_rate: *sampling_rate
-    batchsize: 2
+    batch_size: 2
     linear_start: 0.0015
     linear_end: 0.0195
     num_timesteps_cond: 1
