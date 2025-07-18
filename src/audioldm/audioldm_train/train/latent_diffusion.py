@@ -204,9 +204,7 @@ def main(configs, config_yaml_path, exp_group_name, exp_name, perform_validation
                     size_mismatch_keys.append(key)
             latent_diffusion.load_state_dict(ckpt, strict=False)
         trainer.fit(latent_diffusion, loader, val_loader)
-        print("Here 1.1.7")
     else:
-        print("Here 2")
         trainer.fit(
             latent_diffusion, loader, val_loader, ckpt_path=resume_from_checkpoint
         )
