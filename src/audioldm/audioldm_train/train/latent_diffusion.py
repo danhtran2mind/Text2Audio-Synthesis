@@ -145,6 +145,9 @@ def main(configs, config_yaml_path, exp_group_name, exp_name, perform_validation
     latent_diffusion = instantiate_from_config(configs["model"])
     latent_diffusion.set_log_dir(log_path, exp_group_name, exp_name)
 
+     # Add to model val_gradient_accumulation_steps
+    latent_diffusion.val_gradient_accumulation_steps = val_gradient_accumulation_steps 
+
     # Initialize logger based on wandb_off flag
     if not wandb_off:
         wandb_logger = WandbLogger(
@@ -172,10 +175,7 @@ def main(configs, config_yaml_path, exp_group_name, exp_name, perform_validation
         check_val_every_n_epoch=validation_every_n_epochs,
         strategy=DDPStrategy(find_unused_parameters=True) if accelerator == "gpu" else 'auto',
         callbacks=[checkpoint_callback],
-        accumulate_grad_batches={
-            "train": gradient_accumulation_steps,
-            "val": val_gradient_accumulation_steps,
-        },
+        accumulate_grad_batches=gradient_accumulation_steps,
     )
 
     if is_external_checkpoints:
