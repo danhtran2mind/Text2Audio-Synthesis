@@ -91,9 +91,9 @@ model:
     optimize_ddpm_parameter: *optimize_ddpm_parameter
     sampling_rate: *sampling_rate
 
-    batch_size: 2
+    batchsize: 2
     gradient_accumulation_steps: 2
-    val_batch_size: 2
+    val_batchsize: 2
     val_gradient_accumulation_steps: 2
 
     linear_start: 0.0015

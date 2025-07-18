@@ -50,8 +50,8 @@ def main(configs, config_yaml_path, exp_group_name, exp_name, perform_validation
 
     num_workers = min(configs["preprocessing"]["num_workers"], os.cpu_count() - 1)
     log_path = configs["log_directory"]
-    batch_size = configs["model"]["params"]["batch_size"]
-    val_batch_size = configs["model"]["params"]["val_batch_size"]
+    batch_size = configs["model"]["params"]["batchsize"]
+    val_batch_size = configs["model"]["params"]["val_batchsize"]
 
     gradient_accumulation_steps = configs["model"]["params"]["gradient_accumulation_steps"]
     val_gradient_accumulation_steps = configs["model"]["params"]["val_gradient_accumulation_steps"]
