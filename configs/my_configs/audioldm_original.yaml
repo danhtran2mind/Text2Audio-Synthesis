@@ -24,7 +24,6 @@ data:
 step:
   validation_every_n_epochs: 5
   save_checkpoint_every_n_steps: 5000
-  # limit_val_batches: 2
   max_steps: 800000
   save_top_k: 1
 
@@ -41,6 +40,7 @@ preprocessing:
     n_mel_channels: *mel_bins
     mel_fmin: 0
     mel_fmax: 8000 
+  num_workers: 2
 
 augmentation:
   mixup: 0.0
@@ -91,6 +91,7 @@ model:
     optimize_ddpm_parameter: *optimize_ddpm_parameter
     sampling_rate: *sampling_rate
     batch_size: 2
+    val_batch_size: 2
     linear_start: 0.0015
     linear_end: 0.0195
     num_timesteps_cond: 1

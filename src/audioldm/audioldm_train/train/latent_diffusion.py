@@ -48,8 +48,10 @@ def main(configs, config_yaml_path, exp_group_name, exp_name, perform_validation
     if "precision" in configs.keys():
         torch.set_float32_matmul_precision(configs["precision"])  # highest, high, medium
 
+    num_workers = min(configs["preprocessing"]["num_workers"], os.cpu_count() - 1)
     log_path = configs["log_directory"]
     batch_size = configs["model"]["params"]["batch_size"]
+    val_batch_size = configs["model"]["params"]["val_batch_size"]
 
     if "dataloader_add_ons" in configs["data"].keys():
         dataloader_add_ons = configs["data"]["dataloader_add_ons"]
@@ -61,7 +63,7 @@ def main(configs, config_yaml_path, exp_group_name, exp_name, perform_validation
     loader = DataLoader(
         dataset,
         batch_size=batch_size,
-        num_workers=2,
+        num_workers=num_workers,
         pin_memory=accelerator == "gpu",
         shuffle=True,
     )
@@ -75,8 +77,8 @@ def main(configs, config_yaml_path, exp_group_name, exp_name, perform_validation
 
     val_loader = DataLoader(
         val_dataset,
-        batch_size=8,
-        num_workers=2,
+        batch_size=val_batch_size,
+        num_workers=num_workers,
         pin_memory=accelerator == "gpu",
     )
 
