@@ -172,7 +172,11 @@ def main(configs, config_yaml_path, exp_group_name, exp_name, perform_validation
 
     if is_external_checkpoints:
         if resume_from_checkpoint is not None:
-            ckpt = torch.load(resume_from_checkpoint)["state_dict"]
+            ckpt = torch.load(resume_from_checkpoint,
+                              map_location=torch.device('cuda' if torch.cuda.
+                                                        is_available() else 'cpu')
+                              )["state_dict"]
+            
             key_not_in_model_state_dict = []
             size_mismatch_keys = []
             state_dict = latent_diffusion.state_dict()
