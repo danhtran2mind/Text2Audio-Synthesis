@@ -90,8 +90,12 @@ model:
     warmup_steps: *warmup_steps
     optimize_ddpm_parameter: *optimize_ddpm_parameter
     sampling_rate: *sampling_rate
+
     batch_size: 2
+    gradient_accumulation_steps: 2
     val_batch_size: 2
+    val_gradient_accumulation_steps: 2
+
     linear_start: 0.0015
     linear_end: 0.0195
     num_timesteps_cond: 1
