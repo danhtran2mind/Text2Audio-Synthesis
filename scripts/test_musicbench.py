@@ -21,7 +21,7 @@ def load_and_clean_dataset():
     return train_df, val_df
 
 
-def download_and_extract_dataset(raw_data_dir):
+def download_and_extract_dataset(raw_data_dir, music_bench_dir):
     """Download and extract the MusicBench dataset."""
     os.makedirs("data/audioset/music_bench", exist_ok=True)
     snapshot_download(repo_id="amaai-lab/MusicBench", cache_dir="data",
@@ -116,12 +116,12 @@ def create_dataset_root_json():
 
 def main():
     """Main function to execute the dataset processing pipeline."""
-    
-    music_bench_dir = "./data/audioset/music_bench/datashare"
+
     raw_data_dir = "data/datasets--amaai-lab--MusicBench"
+    music_bench_dir = "./data/audioset/music_bench/datashare"
 
     train_df, val_df = load_and_clean_dataset()
-    download_and_extract_dataset(raw_data_dir)
+    download_and_extract_dataset(raw_data_dir, music_bench_dir)
     move_and_cleanup_files(raw_data_dir, music_bench_dir, train_df, val_df)
     train_data, val_data = prepare_json_data(train_df, val_df)
     write_json_files(train_data, val_data)
