@@ -66,10 +66,10 @@ def move_and_cleanup_files(raw_data_dir, music_bench_dir, train_df, val_df):
 
     # Clean up datashare and raw data directories
     datashare_dir = os.path.join(music_bench_dir, "datashare")
-    if os.path.exists(datashare_dir):
-        shutil.rmtree(datashare_dir)
-    if os.path.exists(raw_data_dir):
-        shutil.rmtree(raw_data_dir)
+    # if os.path.exists(datashare_dir):
+    #     shutil.rmtree(datashare_dir)
+    # if os.path.exists(raw_data_dir):
+    #     shutil.rmtree(raw_data_dir)
 
 
 def prepare_json_data(train_df, val_df):
