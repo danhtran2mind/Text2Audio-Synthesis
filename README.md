@@ -1,5 +1,11 @@
 # Text to Audio Synthesis (Text2Audio Synthesis)
 
+## Dataset
+The processing dataset at `scripts/process_musicbench.py`
+```bash
+python scripts/process_musicbench.py
+```
+The Processed data will stay at `data` folder
 ## Training
 
 ```bash
