@@ -63,7 +63,7 @@ def move_and_cleanup_files(raw_data_dir, music_bench_dir, train_df, val_df):
             shutil.move(src_path, dst_path)
         else:
             print(f"Warning: File not found: {src_path}")
-            val_df = val_df.drop(index
+            val_df = val_df.drop(index)
                             
     # Clean up datashare and raw data directories
     datashare_dir = os.path.join(music_bench_dir, "datashare")
