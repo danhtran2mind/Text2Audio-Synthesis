@@ -4,3 +4,4 @@ ftfy>=6.3.1
 braceexpand>=0.1.7
 webdataset>=1.0.2
 taming-transformers
+datasets>=3.5.0
