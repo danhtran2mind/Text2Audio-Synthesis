@@ -40,8 +40,9 @@ def move_and_cleanup_files(raw_data_dir, music_bench_dir, train_df, val_df):
     os.makedirs("data/audioset/train", exist_ok=True)
     os.makedirs("data/audioset/val", exist_ok=True)
     os.makedirs("data/audioset/test", exist_ok=True)
+    
     # Move train files
-    for _, row in train_df.iterrows():
+    for index, row in train_df.iterrows():
         src_path = os.path.join(music_bench_dir, row["location"])
         # Extract filename from location
         filename = os.path.basename(row["location"])
@@ -50,9 +51,10 @@ def move_and_cleanup_files(raw_data_dir, music_bench_dir, train_df, val_df):
             shutil.move(src_path, dst_path)
         else:
             print(f"Warning: File not found: {src_path}")
-
+            train_df = train_df.drop(index)
+    
     # Move validation files
-    for _, row in val_df.iterrows():
+    for index, row in val_df.iterrows():
         src_path = os.path.join(music_bench_dir, row["location"])
         # Extract filename from location
         filename = os.path.basename(row["location"])
@@ -61,14 +63,17 @@ def move_and_cleanup_files(raw_data_dir, music_bench_dir, train_df, val_df):
             shutil.move(src_path, dst_path)
         else:
             print(f"Warning: File not found: {src_path}")
-
+            val_df = val_df.drop(index
+                            
     # Clean up datashare and raw data directories
     datashare_dir = os.path.join(music_bench_dir, "datashare")
     if os.path.exists(datashare_dir):
         shutil.rmtree(datashare_dir)
     if os.path.exists(raw_data_dir):
         shutil.rmtree(raw_data_dir)
-
+                                 
+    return train_df, val_df
+                                 
 
 def prepare_json_data(train_df, val_df):
     """Prepare JSON data for train and validation sets with updated paths."""
