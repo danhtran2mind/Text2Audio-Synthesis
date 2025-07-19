@@ -1,11 +1,18 @@
 # Text to Audio Synthesis (Text2Audio Synthesis)
 
+## Download Sample AudioLDM checkpoints
+The code for download and process AudioLDM checkpoints available at: `scripts/dl_audioldm_ckpts.py`. Just run:
+```bash
+python scripts/dl_audioldm_ckpts.py
+```
+The checkpoints will stay at `ckpts` folder.
+
 ## Dataset
 The processing dataset at `scripts/process_musicbench.py`
 ```bash
 python scripts/process_musicbench.py
 ```
-The Processed data will stay at `data` folder
+The Processed data will stay at `data` folder.
 ## Training
 
 ```bash
