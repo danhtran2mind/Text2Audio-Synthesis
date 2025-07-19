@@ -6,3 +6,4 @@ webdataset==1.0.2
 taming-transformers==0.0.1
 pytorch-lightning==2.5.1
 gradio==5.31.0
+datasets==3.5.0
