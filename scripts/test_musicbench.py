@@ -39,7 +39,7 @@ def move_and_cleanup_files(raw_data_dir, music_bench_dir, train_df, val_df):
     # Create train and val directories
     os.makedirs("data/audioset/train", exist_ok=True)
     os.makedirs("data/audioset/val", exist_ok=True)
-
+    os.makedirs("data/audioset/test", exist_ok=True)
     # Move train files
     for _, row in train_df.iterrows():
         src_path = os.path.join(music_bench_dir, row["location"])
@@ -103,6 +103,7 @@ def create_dataset_root_json():
             "path": {
                 "audiocaps": {
                     "train": "./data/audioset/train.json",
+                    "train": "./data/audioset/test.json",
                     "val": "./data/audioset/val.json",
                     "class_label_indices": "/data/metadata/audiocaps/class_labels_indices.csv"
                 }
