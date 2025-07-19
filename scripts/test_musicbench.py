@@ -104,7 +104,7 @@ def create_dataset_root_json():
                 "audiocaps": {
                     "train": "./data/audioset/train.json",
                     "val": "./data/audioset/val.json",
-                    "class_label_indices": "../metadata/audiocaps/class_labels_indices.csv"
+                    "class_label_indices": "/data/metadata/audiocaps/class_labels_indices.csv"
                 }
             }
         }
