@@ -21,19 +21,17 @@ def load_and_clean_dataset():
     return train_df, val_df
 
 
-def download_and_extract_dataset():
+def download_and_extract_dataset(raw_data_dir):
     """Download and extract the MusicBench dataset."""
     os.makedirs("data/audioset/music_bench", exist_ok=True)
     snapshot_download(repo_id="amaai-lab/MusicBench", cache_dir="data",
                       repo_type="dataset")
-    raw_data_dir = "data/datasets--amaai-lab--MusicBench"
+
     snapshot_dir = os.path.join(raw_data_dir, "snapshots",
                                 os.listdir(os.path.join(raw_data_dir, "snapshots"))[0])
-    music_bench_dir = "data/audioset/music_bench"
-
+    
     with tarfile.open(f"{snapshot_dir}/MusicBench.tar.gz", "r:gz") as tar:
         tar.extractall(path=music_bench_dir)
-    return raw_data_dir, music_bench_dir
 
 
 def move_and_cleanup_files(raw_data_dir, music_bench_dir, train_df, val_df):
@@ -66,10 +64,10 @@ def move_and_cleanup_files(raw_data_dir, music_bench_dir, train_df, val_df):
 
     # Clean up datashare and raw data directories
     datashare_dir = os.path.join(music_bench_dir, "datashare")
-    # if os.path.exists(datashare_dir):
-    #     shutil.rmtree(datashare_dir)
-    # if os.path.exists(raw_data_dir):
-    #     shutil.rmtree(raw_data_dir)
+    if os.path.exists(datashare_dir):
+        shutil.rmtree(datashare_dir)
+    if os.path.exists(raw_data_dir):
+        shutil.rmtree(raw_data_dir)
 
 
 def prepare_json_data(train_df, val_df):
@@ -106,7 +104,7 @@ def create_dataset_root_json():
                 "audiocaps": {
                     "train": "./data/audioset/train.json",
                     "val": "./data/audioset/val.json",
-                    "class_label_indices": "./data/metadata/audiocaps/class_labels_indices.csv"
+                    "class_label_indices": "../metadata/audiocaps/class_labels_indices.csv"
                 }
             }
         }
@@ -118,8 +116,12 @@ def create_dataset_root_json():
 
 def main():
     """Main function to execute the dataset processing pipeline."""
+    
+    music_bench_dir = "./data/audioset/music_bench/datashare"
+    raw_data_dir = "data/datasets--amaai-lab--MusicBench"
+
     train_df, val_df = load_and_clean_dataset()
-    raw_data_dir, music_bench_dir = download_and_extract_dataset()
+    download_and_extract_dataset(raw_data_dir)
     move_and_cleanup_files(raw_data_dir, music_bench_dir, train_df, val_df)
     train_data, val_data = prepare_json_data(train_df, val_df)
     write_json_files(train_data, val_data)
