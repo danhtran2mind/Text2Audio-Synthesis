@@ -92,7 +92,9 @@ def write_json_files(train_data, val_data):
         json.dump({"data": train_data}, f, indent=4)
     with open("data/audioset/val.json", "w") as f:
         json.dump({"data": val_data}, f, indent=4)
-
+    with open("data/audioset/test.json", "w") as f:
+        json.dump({"data": {}}, f, indent=4)
+    
 
 def create_dataset_root_json():
     """Create dataset_root.json with metadata configuration."""
@@ -105,7 +107,7 @@ def create_dataset_root_json():
                     "train": "./data/audioset/train.json",
                     "train": "./data/audioset/test.json",
                     "val": "./data/audioset/val.json",
-                    "class_label_indices": "/data/metadata/audiocaps/class_labels_indices.csv"
+                    "class_label_indices": "../metadata/audiocaps/class_labels_indices.csv"
                 }
             }
         }
