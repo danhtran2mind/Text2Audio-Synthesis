@@ -38,7 +38,7 @@ def move_and_cleanup_files(raw_data_dir, music_bench_dir, train_df, val_df):
     """Move files from datashare to music_bench, organize into train/val folders, and clean up."""
     # Create train and val directories
     os.makedirs("data/audioset/train", exist_ok=True)
-    os.makedirs("data/audioset/val", exist_ok=True)
+    # os.makedirs("data/audioset/val", exist_ok=True)
     os.makedirs("data/audioset/test", exist_ok=True)
     
     datashare_dir = os.path.join(music_bench_dir, "datashare")
@@ -60,7 +60,7 @@ def move_and_cleanup_files(raw_data_dir, music_bench_dir, train_df, val_df):
         src_path = os.path.join(datashare_dir, row["location"])
         # Extract filename from location
         filename = os.path.basename(row["location"])
-        dst_path = os.path.join("data/audioset/val", filename)
+        dst_path = os.path.join("data/audioset/test", filename)
         if os.path.exists(src_path):
             shutil.move(src_path, dst_path)
         else:
@@ -84,7 +84,7 @@ def prepare_json_data(train_df, val_df):
         for _, row in train_df.iterrows()
     ]
     val_data = [
-        {"wav": os.path.join("data/audioset/val", os.path.basename(row["location"])),
+        {"wav": os.path.join("data/audioset/test", os.path.basename(row["location"])),
          "caption": row["main_caption"]}
         for _, row in val_df.iterrows()
     ]
@@ -96,10 +96,10 @@ def write_json_files(train_data, val_data):
     os.makedirs("data/audioset", exist_ok=True)
     with open("data/audioset/train.json", "w") as f:
         json.dump({"data": train_data}, f, indent=4)
-    with open("data/audioset/val.json", "w") as f:
-        json.dump({"data": val_data}, f, indent=4)
     with open("data/audioset/test.json", "w") as f:
-        json.dump({"data": {}}, f, indent=4)
+        json.dump({"data": val_data}, f, indent=4)
+    # with open("data/audioset/test.json", "w") as f:
+    #     json.dump({"data": {}}, f, indent=4)
     
 
 def create_dataset_root_json():
