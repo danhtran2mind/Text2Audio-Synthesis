@@ -5,6 +5,8 @@ import os
 import shutil
 import tarfile
 import json
+import multiprocessing as mp
+import argparse
 
 
 def load_and_clean_dataset():
@@ -34,47 +36,63 @@ def download_and_extract_dataset(raw_data_dir, music_bench_dir):
         tar.extractall(path=music_bench_dir)
 
 
-def move_and_cleanup_files(raw_data_dir, music_bench_dir, train_df, val_df):
-    """Move files from datashare to music_bench, organize into train/val folders, and clean up."""
-    # Create train and val directories
+def move_file(args):
+    """Helper function to move a single file and handle errors."""
+    src_path, dst_path, index = args
+    if os.path.exists(src_path):
+        shutil.move(src_path, dst_path)
+        return index, True
+    else:
+        print(f"Warning: File not found: {src_path}")
+        return index, False
+
+
+def move_and_cleanup_files(raw_data_dir, music_bench_dir, train_df, val_df, num_processes):
+    """Move files from datashare to music_bench, organize into train/test folders, and clean up."""
+    # Create train and test directories
     os.makedirs("data/audioset/train", exist_ok=True)
-    # os.makedirs("data/audioset/val", exist_ok=True)
     os.makedirs("data/audioset/test", exist_ok=True)
     
     datashare_dir = os.path.join(music_bench_dir, "datashare")
 
-    # Move train files
-    for index, row in train_df.iterrows():
-        src_path = os.path.join(datashare_dir, row["location"])
-        # Extract filename from location
-        filename = os.path.basename(row["location"])
-        dst_path = os.path.join("data/audioset/train", filename)
-        if os.path.exists(src_path):
-            shutil.move(src_path, dst_path)
-        else:
-            print(f"Warning: File not found: {src_path}")
-            train_df = train_df.drop(index)
-    
-    # Move validation files
-    for index, row in val_df.iterrows():
-        src_path = os.path.join(datashare_dir, row["location"])
-        # Extract filename from location
-        filename = os.path.basename(row["location"])
-        dst_path = os.path.join("data/audioset/test", filename)
-        if os.path.exists(src_path):
-            shutil.move(src_path, dst_path)
-        else:
-            print(f"Warning: File not found: {src_path}")
-            val_df = val_df.drop(index)
-                            
-    # Clean up datashare and raw data directories    
+    # Prepare arguments for parallel file moving
+    train_tasks = [
+        (os.path.join(datashare_dir, row["location"]),
+         os.path.join("data/audioset/train", os.path.basename(row["location"])),
+         index)
+        for index, row in train_df.iterrows()
+    ]
+    val_tasks = [
+        (os.path.join(datashare_dir, row["location"]),
+         os.path.join("data/audioset/test", os.path.basename(row["location"])),
+         index)
+        for index, row in val_df.iterrows()
+    ]
+
+    # Use multiprocessing pool for file moving
+    with mp.Pool(processes=num_processes) as pool:
+        # Process train files
+        train_results = pool.map(move_file, train_tasks)
+        # Drop rows where files were not found
+        for index, success in train_results:
+            if not success:
+                train_df = train_df.drop(index)
+        
+        # Process validation files
+        val_results = pool.map(move_file, val_tasks)
+        # Drop rows where files were not found
+        for index, success in val_results:
+            if not success:
+                val_df = val_df.drop(index)
+
+    # Clean up datashare and raw data directories
     if os.path.exists(music_bench_dir):
         shutil.rmtree(music_bench_dir)
     if os.path.exists(raw_data_dir):
         shutil.rmtree(raw_data_dir)
-                                 
+    
     return train_df, val_df
-                                 
+
 
 def prepare_json_data(train_df, val_df):
     """Prepare JSON data for train and validation sets with updated paths."""
@@ -98,9 +116,7 @@ def write_json_files(train_data, val_data):
         json.dump({"data": train_data}, f, indent=4)
     with open("data/audioset/test.json", "w") as f:
         json.dump({"data": val_data}, f, indent=4)
-    # with open("data/audioset/test.json", "w") as f:
-    #     json.dump({"data": {}}, f, indent=4)
-    
+
 
 def create_dataset_root_json():
     """Create dataset_root.json with metadata configuration."""
@@ -111,8 +127,8 @@ def create_dataset_root_json():
             "path": {
                 "audiocaps": {
                     "train": "./data/audioset/train.json",
-                    "train": "./data/audioset/test.json",
-                    "val": "./data/audioset/val.json",
+                    "test": "./data/audioset/test.json",
+                    "val": "./data/audioset/test.json",  # Note: Using test.json as val.json per original code
                     "class_label_indices": "../metadata/audiocaps/class_labels_indices.csv"
                 }
             }
@@ -123,19 +139,26 @@ def create_dataset_root_json():
         json.dump(dataset_root, f, indent=4)
 
 
-def main():
+def main(arg_process):
     """Main function to execute the dataset processing pipeline."""
+    # Limit the number of processes to the minimum of arg_process and CPU count
+    num_processes = min(arg_process, os.cpu_count())
+    print(f"Using {num_processes} processes for parallel file operations.")
 
     raw_data_dir = "data/datasets--amaai-lab--MusicBench"
     music_bench_dir = "./data/audioset/music_bench"
 
     train_df, val_df = load_and_clean_dataset()
     download_and_extract_dataset(raw_data_dir, music_bench_dir)
-    move_and_cleanup_files(raw_data_dir, music_bench_dir, train_df, val_df)
+    train_df, val_df = move_and_cleanup_files(raw_data_dir, music_bench_dir, train_df, val_df, num_processes)
     train_data, val_data = prepare_json_data(train_df, val_df)
     write_json_files(train_data, val_data)
     create_dataset_root_json()
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="Process MusicBench dataset with parallel file operations.")
+    parser.add_argument("--arg_process", type=int, default=os.cpu_count(),
+                        help="Number of processes to use (capped at CPU count).")
+    args = parser.parse_args()
+    main(args.arg_process)
