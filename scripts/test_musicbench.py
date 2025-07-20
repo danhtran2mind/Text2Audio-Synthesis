@@ -45,7 +45,7 @@ def move_file(args):
     else:
         print(f"Warning: File not found: {src_path}")
         return index, False
-
+        
 
 def move_and_cleanup_files(raw_data_dir, music_bench_dir, train_df, val_df, num_processes):
     """Move files from datashare to music_bench, organize into train/test folders, and clean up."""
@@ -84,6 +84,26 @@ def move_and_cleanup_files(raw_data_dir, music_bench_dir, train_df, val_df, num_
         for index, success in val_results:
             if not success:
                 val_df = val_df.drop(index)
+
+    # Remove files in train folder not in train_df
+    train_filenames = set(os.path.basename(row["location"]) for _, row in train_df.iterrows())
+    train_dir = "data/audioset/train"
+    for filename in os.listdir(train_dir):
+        if filename not in train_filenames:
+            file_path = os.path.join(train_dir, filename)
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+                print(f"Removed extra file from train folder: {file_path}")
+
+    # Remove files in test folder not in val_df
+    test_filenames = set(os.path.basename(row["location"]) for _, row in val_df.iterrows())
+    test_dir = "data/audioset/test"
+    for filename in os.listdir(test_dir):
+        if filename not in test_filenames:
+            file_path = os.path.join(test_dir, filename)
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+                print(f"Removed extra file from test folder: {file_path}")
 
     # Clean up datashare and raw data directories
     if os.path.exists(music_bench_dir):
