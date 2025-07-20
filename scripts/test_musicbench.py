@@ -41,9 +41,11 @@ def move_and_cleanup_files(raw_data_dir, music_bench_dir, train_df, val_df):
     os.makedirs("data/audioset/val", exist_ok=True)
     os.makedirs("data/audioset/test", exist_ok=True)
     
+    datashare_dir = os.path.join(music_bench_dir, "datashare")
+
     # Move train files
     for index, row in train_df.iterrows():
-        src_path = os.path.join(music_bench_dir, row["location"])
+        src_path = os.path.join(datashare_dir, row["location"])
         # Extract filename from location
         filename = os.path.basename(row["location"])
         dst_path = os.path.join("data/audioset/train", filename)
@@ -55,7 +57,7 @@ def move_and_cleanup_files(raw_data_dir, music_bench_dir, train_df, val_df):
     
     # Move validation files
     for index, row in val_df.iterrows():
-        src_path = os.path.join(music_bench_dir, row["location"])
+        src_path = os.path.join(datashare_dir, row["location"])
         # Extract filename from location
         filename = os.path.basename(row["location"])
         dst_path = os.path.join("data/audioset/val", filename)
@@ -65,10 +67,9 @@ def move_and_cleanup_files(raw_data_dir, music_bench_dir, train_df, val_df):
             print(f"Warning: File not found: {src_path}")
             val_df = val_df.drop(index)
                             
-    # Clean up datashare and raw data directories
-    datashare_dir = os.path.join(music_bench_dir, "datashare")
-    if os.path.exists(datashare_dir):
-        shutil.rmtree(datashare_dir)
+    # Clean up datashare and raw data directories    
+    if os.path.exists(music_bench_dir):
+        shutil.rmtree(music_bench_dir)
     if os.path.exists(raw_data_dir):
         shutil.rmtree(raw_data_dir)
                                  
@@ -126,7 +127,7 @@ def main():
     """Main function to execute the dataset processing pipeline."""
 
     raw_data_dir = "data/datasets--amaai-lab--MusicBench"
-    music_bench_dir = "./data/audioset/music_bench/datashare"
+    music_bench_dir = "./data/audioset/music_bench"
 
     train_df, val_df = load_and_clean_dataset()
     download_and_extract_dataset(raw_data_dir, music_bench_dir)
