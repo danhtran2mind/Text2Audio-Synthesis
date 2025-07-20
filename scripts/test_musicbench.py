@@ -117,12 +117,17 @@ def move_and_cleanup_files(raw_data_dir, music_bench_dir, train_df, val_df, num_
 def prepare_json_data(train_df, val_df):
     """Prepare JSON data for train and validation sets with updated paths."""
     train_data = [
-        {"wav": os.path.join("data/audioset/train", os.path.basename(row["location"])),
-         "caption": row["main_caption"]}
+        {
+         # "wav": os.path.join("data/audioset/train", os.path.basename(row["location"])),
+         "wav": os.path.join("train", os.path.basename(row["location"])),
+         "caption": row["main_caption"]
+        }
         for _, row in train_df.iterrows()
     ]
     val_data = [
-        {"wav": os.path.join("data/audioset/test", os.path.basename(row["location"])),
+        {
+         # "wav": os.path.join("data/audioset/test", os.path.basename(row["location"])),
+         "wav": os.path.join("test", os.path.basename(row["location"])),
          "caption": row["main_caption"]}
         for _, row in val_df.iterrows()
     ]
