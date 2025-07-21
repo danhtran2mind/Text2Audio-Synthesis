@@ -22,9 +22,9 @@ data:
   dataloader_add_ons: [] 
 
 step:
-  validation_every_n_epochs: 5
-  save_checkpoint_every_n_steps: 20000
-  max_steps: 800000
+  validation_every_n_epochs: 1
+  save_checkpoint_every_n_steps: 2000
+  max_steps: 8000
   save_top_k: 1
 
 preprocessing:
