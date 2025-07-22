@@ -22,9 +22,9 @@ data:
   dataloader_add_ons: [] 
 
 step:
-  validation_every_n_epochs: 1
-  save_checkpoint_every_n_steps: 1500
-  max_steps: 3000
+  validation_every_n_epochs: 5
+  save_checkpoint_every_n_steps: 40000
+  max_steps: 800000
   save_top_k: 2
 
 preprocessing:
@@ -46,7 +46,7 @@ augmentation:
   mixup: 0.0
 
 addition_params:
-  gradient_accumulation_steps: 4
+  gradient_accumulation_steps: 1
 
 model:
   target: audioldm_train.modules.latent_diffusion.ddpm.LatentDiffusion
