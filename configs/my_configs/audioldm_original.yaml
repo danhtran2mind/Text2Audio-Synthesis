@@ -46,7 +46,7 @@ augmentation:
   mixup: 0.0
 
 addition_params:
-  gradient_accumulation_steps: 1
+  gradient_accumulation_steps: 4
 
 model:
   target: audioldm_train.modules.latent_diffusion.ddpm.LatentDiffusion
