@@ -38,7 +38,7 @@ def print_on_rank0(msg):
     if torch.distributed.get_rank() == 0:
         print(msg)
 
-def main(configs, config_yaml_path, exp_group_name, exp_name, perform_validation, accelerator, wandb_off, seed):
+def train(configs, config_yaml_path, exp_group_name, exp_name, perform_validation, accelerator, wandb_off, seed):
     # Set random seed for reproducibility
     seed_everything(seed if "seed" not in configs else configs["seed"], workers=True)
     
@@ -269,4 +269,4 @@ if __name__ == "__main__":
         config_yaml["model"]["params"]["cond_stage_config"]["crossattn_audiomae_generated"]["params"]["use_gt_mae_output"] = False
         config_yaml["step"]["limit_val_batches"] = None
 
-    main(config_yaml, config_yaml_path, exp_group_name, exp_name, perform_validation, accelerator, wandb_off, seed)
+    train(config_yaml, config_yaml_path, exp_group_name, exp_name, perform_validation, accelerator, wandb_off, seed)
