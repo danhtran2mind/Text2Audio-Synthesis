@@ -66,9 +66,10 @@ snapshot_download(
 )
 ```
 ```bash
-!python audioldm_train/train/latent_diffusion.py \
-    --config_yaml audioldm_train/config/2023_08_23_reproduce_audioldm/audioldm_original.yaml \
-    --reload_from_ckpt data/checkpoints/audioldm-s-full.ckpt \
+python src/audioldm/train.py \
+    --config_yaml configs/my_configs/audioldm_original.yaml \
+    --reload_from_ckpt ckpts/audioldm-s-full.ckpt \
+    --accelerator gpu \
     --wandb_off
 ```
 
