@@ -1,4 +1,4 @@
-# Text to Audio Synthesis (Text2Audio Synthesis)
+# Text to Audio AudioLDM (Text2Audio AudioLDM)
 
 ## Download Sample AudioLDM checkpoints
 The code for download and process AudioLDM checkpoints available at: `scripts/dl_audioldm_ckpts.py`. Just run:
