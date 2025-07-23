@@ -38,13 +38,10 @@ def print_on_rank0(msg):
     if torch.distributed.get_rank() == 0:
         print(msg)
 
-def main(configs, config_yaml_path, exp_group_name, exp_name, perform_validation, accelerator, wandb_off):
-    if "seed" in configs.keys():
-        seed_everything(configs["seed"])
-    else:
-        print("SEED EVERYTHING TO 0")
-        seed_everything(0)
-
+def main(configs, config_yaml_path, exp_group_name, exp_name, perform_validation, accelerator, wandb_off, seed):
+    # Set random seed for reproducibility
+    seed_everything(seed if "seed" not in configs else configs["seed"], workers=True)
+    
     if "precision" in configs.keys():
         torch.set_float32_matmul_precision(configs["precision"])  # highest, high, medium
 
@@ -145,7 +142,7 @@ def main(configs, config_yaml_path, exp_group_name, exp_name, perform_validation
     latent_diffusion = instantiate_from_config(configs["model"])
     latent_diffusion.set_log_dir(log_path, exp_group_name, exp_name)
 
-     # Add to model val_gradient_accumulation_steps
+    # Add to model val_gradient_accumulation_steps
     latent_diffusion.val_gradient_accumulation_steps = val_gradient_accumulation_steps 
 
     # Initialize logger based on wandb_off flag
@@ -181,8 +178,7 @@ def main(configs, config_yaml_path, exp_group_name, exp_name, perform_validation
     if is_external_checkpoints:
         if resume_from_checkpoint is not None:
             ckpt = torch.load(resume_from_checkpoint,
-                              map_location=torch.device('cuda' if torch.cuda.
-                                                        is_available() else 'cpu')
+                              map_location=torch.device('cuda' if torch.cuda.is_available() else 'cpu')
                               )["state_dict"]
             
             key_not_in_model_state_dict = []
@@ -230,12 +226,6 @@ if __name__ == "__main__":
         action="store_true",
         help="perform validation",
     )
-    # parser.add_argument(
-    # "--gradient_accumulation_steps",
-    # type=int,
-    # default=1,
-    # help="number of gradient accumulation steps",
-    # )
     parser.add_argument(
         "--accelerator",
         type=str,
@@ -248,13 +238,19 @@ if __name__ == "__main__":
         action="store_true",
         help="disable Wandb logging",
     )
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default=42,
+        help="random seed for reproducibility, default is 42",
+    )
 
     args = parser.parse_args()
 
     perform_validation = args.val
     accelerator = args.accelerator
     wandb_off = args.wandb_off
-
+    seed = args.seed
 
     if accelerator == "gpu" and not torch.cuda.is_available():
         raise RuntimeError("CUDA is not available, use --accelerator cpu instead")
@@ -273,4 +269,4 @@ if __name__ == "__main__":
         config_yaml["model"]["params"]["cond_stage_config"]["crossattn_audiomae_generated"]["params"]["use_gt_mae_output"] = False
         config_yaml["step"]["limit_val_batches"] = None
 
-    main(config_yaml, config_yaml_path, exp_group_name, exp_name, perform_validation, accelerator, wandb_off)
+    main(config_yaml, config_yaml_path, exp_group_name, exp_name, perform_validation, accelerator, wandb_off, seed)
