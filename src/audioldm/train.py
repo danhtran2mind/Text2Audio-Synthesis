@@ -1,4 +1,8 @@
-# src/audioldm/train.py
+import os
+import sys
+import argparse
+
+sys.path.append(os.path.dirname(__file__))
 from audioldm_train.train.latent_diffusion import train  # Relative import
 
 if __name__ == "__main__":
