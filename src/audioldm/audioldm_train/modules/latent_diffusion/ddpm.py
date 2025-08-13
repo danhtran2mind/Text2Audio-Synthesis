@@ -102,7 +102,7 @@ class DDPM(pl.LightningModule):
         self.parameterization = parameterization
         self.state = None
         print(
-            f"{self.__class__.__name__}: Running in {self.parameterrization}-prediction mode"
+            f"{self.__class__.__name__}: Running in {self.parameterization}-prediction mode"
         )
         assert sampling_rate is not None
         self.validation_folder_name = "temp_name"
