@@ -117,6 +117,8 @@ class DDPM(pl.LightningModule):
             .get("params", {})
             .get("pretrained_path", "ckpts/clap_music_speech_audioset_epoch_15_esc_89.98.pt")
         )
+
+        print("clap_pretrained_path, clap_pretrained_path, clap_pretrained_path : ", clap_pretrained_path)
         clap_amodel = (
             cond_stage_config.get("film_clap_cond1", {})
             .get("params", {})
