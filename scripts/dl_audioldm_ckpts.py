@@ -49,12 +49,41 @@ def move_and_clean_checkpoints(local_dir):
         print(f"Error moving files or removing directory: {e}")
         raise
 
+def copy_specific_files(source_dir, dest_dir = "./ckpts"): 
+    # Ensure destination directory exists
+    os.makedirs(dest_dir, exist_ok=True)
+
+    # List of specific files to copy
+    files_to_copy = [
+        "clap_music_speech_audioset_epoch_15_esc_89.98.pt",
+        "hifigan_16k_64bins.json",
+        "hifigan_16k_64bins.ckpt"
+    ]
+
+    # Copy each file if it exists in source_dir
+    try:
+        for file in files_to_copy:
+            source_path = os.path.join(source_dir, file)
+            dest_path = os.path.join(dest_dir, file)
+            if not os.path.exists(source_path):
+                print(f"Source file {source_path} does not exist. Skipping.")
+                continue
+            if os.path.exists(dest_path):
+                print(f"Skipping {file}: already exists in {dest_dir}")
+                continue
+            shutil.copy(source_path, dest_path)
+            print(f"Copied {file} to {dest_dir}")
+    except Exception as e:
+        print(f"Error copying files: {e}")
+        raise
+
 def model_checkpoint_process(local_dir):
     download_checkpoints(local_dir)
     move_and_clean_checkpoints(local_dir)
+    copy_specific_files(local_dir, local_dir)
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Download and move checkpoints from Hugging Face Hub.")
+    parser = argparse.ArgumentParser(description="Download, move, and copy checkpoints from Hugging Face Hub.")
     parser.add_argument(
         "--local_dir",
         type=str,
