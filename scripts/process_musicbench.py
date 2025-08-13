@@ -26,7 +26,7 @@ def load_and_clean_dataset(dataset_id):
 def download_and_extract_dataset(dataset_id, raw_data_dir, music_bench_dir):
     """Download and extract the MusicBench dataset."""
     os.makedirs(music_bench_dir, exist_ok=True)
-    snapshot_download(repo_id=dataset_id, cache_dir="data",
+    snapshot_download(repo_id=dataset_id, local_dir="data",
                       repo_type="dataset")
 
     snapshot_dir = os.path.join(raw_data_dir, "snapshots",
