@@ -82,16 +82,16 @@ class DDPM(pl.LightningModule):
         cosine_s=8e-3,
         given_betas=None,
         original_elbo_weight=0.0,
-        v_posterior=0.0,  # weight for choosing posterior variance as sigma = (1-v) * beta_tilde + v * beta
+        v_posterior=0.0,
         l_simple_weight=1.0,
         conditioning_key=None,
-        parameterization="eps",  # all assuming fixed variance schedules
+        parameterization="eps",
         scheduler_config=None,
         use_positional_encodings=False,
         learn_logvar=False,
         logvar_init=0.0,
         evaluator=None,
-        cond_stage_config=None,  # Added to access CLAP pretrained_path
+        cond_stage_config=None,
     ):
         super().__init__()
         assert parameterization in [
@@ -102,7 +102,7 @@ class DDPM(pl.LightningModule):
         self.parameterization = parameterization
         self.state = None
         print(
-            f"{self.__class__.__name__}: Running in {self.parameterization}-prediction mode"
+            f"{self.__class__.__name__}: Running in {self.parameterrization}-prediction mode"
         )
         assert sampling_rate is not None
         self.validation_folder_name = "temp_name"
@@ -111,18 +111,23 @@ class DDPM(pl.LightningModule):
         self.first_stage_key = first_stage_key
         self.sampling_rate = sampling_rate
 
-        # Dynamically get the pretrained_path from cond_stage_config
+        # Load pretrained_path and amodel from cond_stage_config
         clap_pretrained_path = (
             cond_stage_config.get("film_clap_cond1", {})
             .get("params", {})
-            .get("pretrained_path", "ckpts/clap_music_speech_audioset_epoch_15_esc_89.98.pt")  # Fallback to default
+            .get("pretrained_path", "ckpts/clap_music_speech_audioset_epoch_15_esc_89.98.pt")
+        )
+        clap_amodel = (
+            cond_stage_config.get("film_clap_cond1", {})
+            .get("params", {})
+            .get("amodel", "HTSAT-base")
         )
 
         self.clap = CLAPAudioEmbeddingClassifierFreev2(
             pretrained_path=clap_pretrained_path,
             sampling_rate=self.sampling_rate,
             embed_mode="audio",
-            amodel="HTSAT-base",
+            amodel=clap_amodel,
         )
 
         if self.global_rank == 0:
@@ -181,7 +186,6 @@ class DDPM(pl.LightningModule):
         self.logger_version = None
 
         self.label_indices_total = None
-        # To avoid the system cannot find metric value for checkpoint
         self.metrics_buffer = {
             "val/kullback_leibler_divergence_sigmoid": 15.0,
             "val/kullback_leibler_divergence_softmax": 10.0,
@@ -196,6 +200,8 @@ class DDPM(pl.LightningModule):
         }
         self.initial_learning_rate = None
         self.test_data_subset_path = None
+
+    # ... (rest of the DDPM class and other classes remain unchanged)
 
     def get_log_dir(self):
         return os.path.join(
