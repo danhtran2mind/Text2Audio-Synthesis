@@ -80,7 +80,7 @@ def copy_specific_files(source_dir, dest_dir = "./ckpts"):
 def model_checkpoint_process(local_dir):
     download_checkpoints(local_dir)
     move_and_clean_checkpoints(local_dir)
-    copy_specific_files(local_dir, dest_dir="./ckpts)
+    copy_specific_files(local_dir, dest_dir="./ckpts")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Download, move, and copy checkpoints from Hugging Face Hub.")
