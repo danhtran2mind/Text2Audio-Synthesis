@@ -67,7 +67,7 @@ snapshot_download(
 ```
 ```bash
 python src/audioldm/train.py \
-    --config_yaml configs/my_configs/audioldm_original.yaml \
+    --config_yaml configs/AudioLDM_training_configs/audioldm_original.yaml \
     --reload_from_ckpt ckpts/audioldm-s-full.ckpt \
     --accelerator gpu \
     --wandb_off
