@@ -6,7 +6,7 @@ import torch as th
 import torch.nn as nn
 import torch.nn.functional as F
 
-from latent_diffusion.util import (
+from .util import (
     checkpoint,
     conv_nd,
     linear,
