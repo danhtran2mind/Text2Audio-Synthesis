@@ -16,8 +16,8 @@ from functools import partial
 from tqdm import tqdm
 
 from ..utils import exists, default, count_params, instantiate_from_config
-from latent_diffusion.ema import LitEma
-from latent_diffusion.util import (
+from .ema import LitEma
+from .util import (
     make_beta_schedule,
     extract_into_tensor,
     noise_like,
