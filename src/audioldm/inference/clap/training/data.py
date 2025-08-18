@@ -7,7 +7,7 @@ import random
 
 # import h5py
 from dataclasses import dataclass
-from audioldm.clap.training.params import parse_args
+from .params import parse_args
 
 # import braceexpand
 import numpy as np
