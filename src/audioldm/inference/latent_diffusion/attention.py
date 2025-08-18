@@ -5,7 +5,7 @@ import torch.nn.functional as F
 from torch import nn
 from einops import rearrange
 
-from latent_diffusion.util import checkpoint
+from .util import checkpoint
 
 
 def exists(val):
