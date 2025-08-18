@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
-from audioldm.clap.open_clip import create_model
-from audioldm.clap.training.data import get_audio_features
+from open_clip import create_model
+from training.data import get_audio_features
 import torchaudio
 from transformers import RobertaTokenizer
 import torch.nn.functional as F
