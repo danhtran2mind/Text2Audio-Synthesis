@@ -16,13 +16,12 @@ The Processed data will stay at `data` folder.
 ## Training
 
 ```bash
-%cd /content
-!git clone -b dev https://github.com/danhtran2mind/AudioLDM-training-finetuning.git
-%cd AudioLDM-training-finetuning
+git clone -b dev https://github.com/danhtran2mind/AudioLDM-training-finetuning.git
+cd AudioLDM-training-finetuning
 # Install running environment
 
-!pip install -q torchlibrosa ftfy braceexpand webdataset 
-!pip install -q wget taming-transformers
+pip install -q torchlibrosa ftfy braceexpand webdataset 
+pip install -q wget taming-transformers
 ```
 
 ```python
@@ -49,10 +48,10 @@ print(f"Repository downloaded to {local_dir}")
 ```
 
 ```bash
-%cd data/dataset/audioset
-!unzip --quiet train.zip
+cd data/dataset/audioset
+unzip --quiet train.zip
 !unzip --quiet val.zip
-!unzip --quiet test.zip
+unzip --quiet test.zip
 ```
 ```python
 from huggingface_hub import snapshot_download
@@ -73,14 +72,44 @@ python src/audioldm/train.py \
     --wandb_off
 ```
 
-## TO DO
-- [ ] Fix path at:
-    - [ ] `src/audioldm/audioldm_train/modules/latent_diffusion/ddpm.py` line 113
-    - [ ] `src/audioldm/audioldm_train/utilities/model_util.py` line 267
-- [ ] Create sperated `src/audioldm/train.py`
-- [ ] add num_gradient_accum
+## Inference
+
+### Generation mode
+```bash
+python src/audioldm/infer.py \
+    --mode generation \
+    --text "<your_text_prompt>" \
+    --save_dir "<your_output_dir>" \
+    --prompt_as_filename \
+    # --model_name "$MODEL_NAME" \
+    --batchsize <batch_size> \
+    --ddim_steps <ddim_steps> \ # Should be scaled between 50 and 500.
+    --guidance_scale <guidance_scale> \
+    --duration <duration_of_output_audio_in_second>> \
+    --n_candidate_gen_per_text <num_candidates> \
+    --seed <random_seed>
+```
+### Transfer mode
+
+```bash
+python src/audioldm/infer.py \
+    --mode transfer \
+    --text ""<your_text_prompt>"" \
+    --file_path "$INPUT_AUDIO" \
+    --transfer_strength <transfer_strength> \ # Should be be a float in the range [0.0, 1.0] 
+    --save_dir "<your_output_dir>" \
+    --prompt_as_filename \
+    # --model_name "$MODEL_NAME" \
+    --batchsize <batch_size> \
+    --ddim_steps <ddim_steps> \ # Should be scaled between 50 and 500.
+    --guidance_scale <guidance_scale> \
+    --duration <duration_of_output_audio_in_second>> \
+    --n_candidate_gen_per_text <num_candidates> \
+    --seed <random_seed>
+```
+
 
 ## Reference
-This project use code from:
+This project uses code from the following sources:
 - `haoheliu/AudioLDM` (https://github.com/haoheliu/AudioLDM)
 - `haoheliu/AudioLDM-training-finetuning` (https://github.com/haoheliu/AudioLDM-training-finetuning)

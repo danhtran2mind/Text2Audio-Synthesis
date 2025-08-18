@@ -43,13 +43,13 @@ def seed_everything(seed):
     torch.backends.cudnn.benchmark = True
 
 
-def save_wave(waveform, savepath, name="outwav"):
+def save_wave(waveform, save_dir, name="outwav"):
     if type(name) is not list:
         name = [name] * waveform.shape[0]
 
     for i in range(waveform.shape[0]):
         path = os.path.join(
-            savepath,
+            save_dir,
             "%s_%s.wav"
             % (
                 os.path.basename(name[i])
