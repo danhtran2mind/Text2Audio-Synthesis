@@ -87,8 +87,8 @@ def build_model(
     '''Original. Here is a bug that, an unexpected key "cond_stage_model.model.text_branch.embeddings.position_ids" exists in the checkpoint file. '''
     # latent_diffusion.load_state_dict(checkpoint["state_dict"])
     '''2023.10.17 Fix the bug by setting the paramer "strict" as "False" to ignore the unexpected key. '''
-    latent_diffusion.load_state_dict(checkpoint["state_dict"], strict=False)
-
+    # latent_diffusion.load_state_dict(checkpoint["state_dict"], strict=False)
+    latent_diffusion.load_state_dict(checkpoint["state_dict"], strict=True)
     latent_diffusion.eval()
     latent_diffusion = latent_diffusion.to(device)
 
