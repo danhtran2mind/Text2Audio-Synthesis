@@ -15,7 +15,7 @@ from .util import (
     normalization,
     timestep_embedding,
 )
-from latent_diffusion.attention import SpatialTransformer
+from .attention import SpatialTransformer
 
 
 # dummy replace
