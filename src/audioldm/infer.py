@@ -47,7 +47,8 @@ def inference(
         Tuple of (save directory path, generated waveform).
     """
     # Initialize model
-    audioldm = build_model(ckpt_path=ckpt_path, model_name=model_name)
+    audioldm = build_model(ckpt_path=ckpt_path, 
+                           model_name=model_name, download_ckpts=True)
 
     # Handle mode override for generation with audio guidance
     if mode == "generation" and file_path is not None:
