@@ -52,14 +52,15 @@ def round_up_duration(duration):
 def build_model(
     ckpt_path=None,
     config=None,
-    model_name="audioldm-s-full"
+    model_name="audioldm-s-full", 
+    download_ckpts=False
 ):
     print("Load AudioLDM: %s", model_name)
     
     if(ckpt_path is None):
         ckpt_path = get_metadata()[model_name]["path"]
     
-    if(not os.path.exists(ckpt_path)):
+    if(not os.path.exists(ckpt_path)) and download_ckpts:
         download_checkpoint(model_name)
 
     if torch.cuda.is_available():

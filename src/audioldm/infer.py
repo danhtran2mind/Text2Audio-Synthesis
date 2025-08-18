@@ -9,6 +9,7 @@ from unidecode import unidecode
 import argparse
 
 def inference(
+    ckpt_path: str | None,
     model_name: str,
     text: str,
     save_dir: str | None = None,
@@ -27,6 +28,7 @@ def inference(
     Run inference with the given duration for audio generation or style transfer.
 
     Args:
+        ckpt_path: Path to the pretrained model checkpoint.
         model_name: Name of the model checkpoint to use.
         text: Text prompt for audio generation or style transfer.
         save_dir: Directory to save the output audio. Defaults to "./output".
@@ -45,7 +47,7 @@ def inference(
         Tuple of (save directory path, generated waveform).
     """
     # Initialize model
-    audioldm = build_model(model_name=model_name)
+    audioldm = build_model(ckpt_path=ckpt_path, model_name=model_name)
 
     # Handle mode override for generation with audio guidance
     if mode == "generation" and file_path is not None:
@@ -134,6 +136,24 @@ def parse_arguments():
     )
 
     parser.add_argument(
+        "-ckpt",
+        "--ckpt_path",
+        type=str,
+        required=False,
+        help="The path to the pretrained .ckpt model",
+        default=None,
+    )
+
+    parser.add_argument(
+        "--model_name",
+        type=str,
+        default="audioldm-m-full",
+        help="Model checkpoint to use.",
+        choices=["audioldm-s-full", "audioldm-l-full", "audioldm-s-full-v2",
+                 "audioldm-m-text-ft", "audioldm-s-text-ft", "audioldm-m-full"]
+    )
+
+    parser.add_argument(
         "-t",
         "--text",
         type=str,
@@ -169,15 +189,6 @@ def parse_arguments():
         "--prompt_as_filename",
         action="store_true",
         help="Use text prompt as output filename."
-    )
-
-    parser.add_argument(
-        "--model_name",
-        type=str,
-        default="audioldm-m-full",
-        help="Model checkpoint to use.",
-        choices=["audioldm-s-full", "audioldm-l-full", "audioldm-s-full-v2",
-                 "audioldm-m-text-ft", "audioldm-s-text-ft", "audioldm-m-full"]
     )
 
     parser.add_argument(
@@ -236,6 +247,7 @@ def main():
     # assert args.duration % 2.5 == 0, "Duration must be a multiple of 2.5"
 
     inference(
+        ckpt_path=args.ckpt_path,
         mode=args.mode,
         file_path=args.file_path,
         text=args.text,
