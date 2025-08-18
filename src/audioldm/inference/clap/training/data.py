@@ -28,12 +28,11 @@ import io
 from pathlib import Path
 
 # import wget
-
-from audioldm.clap.open_clip.utils import (
+from ..open_clip.utils import (
     get_tar_path_from_dataset_name,
     dataset_split,
 )
-from audioldm.clap.open_clip.utils import load_p, load_class_label
+from ..clap.open_clip.utils import load_p, load_class_label
 import copy
 
 try:
@@ -46,7 +45,7 @@ try:
 except ImportError:
     torchaudio = None
 
-from audioldm.clap.open_clip import tokenize
+from ..clap.open_clip import tokenize
 
 
 def tokenizer(text):
